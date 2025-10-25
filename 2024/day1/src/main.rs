@@ -1,4 +1,4 @@
-
+// day one
 use std::fs;
 
 fn split_whitespace(contents: &str) -> (Vec<i64>, Vec<i64>) {
