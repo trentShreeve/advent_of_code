@@ -1,7 +1,7 @@
 // day one
 use std::fs;
 
-fn split_whitespace(contents: &str) -> (Vec<i64>, Vec<i64>) {
+fn split_whitespace_sort(contents: &str) -> (Vec<i64>, Vec<i64>) {
     let mut left: Vec<i64> = Vec::new();
     let mut right: Vec<i64> = Vec::new();
 
@@ -22,51 +22,41 @@ fn split_whitespace(contents: &str) -> (Vec<i64>, Vec<i64>) {
     (left, right)
 }
 
-fn total_distance(left: Vec<i64>, right: Vec<i64>) -> i64 {
-    let mut dist: Vec<i64> = Vec::new();
-    for (a, b) in left.iter().zip(right.iter()) {
-        let distance = a - b;
-        dist.push(distance.abs());   
-    }
-    dist.iter().sum()
+fn total_distance(left: &Vec<i64>, right: &Vec<i64>) -> i64 {
+    left.iter()
+    .zip(right.iter())
+    .map(|(a,b)| (a-b).abs())
+    .sum()
 }
 
+use::std::collections::HashMap;
 
-fn similarity_score(left: Vec<i64>, right: Vec<i64>) -> i64 {
-    let mut int_score: Vec<i64> = Vec::new();
-    
-    for a in left.iter() {
-        // println!("a: {}",a);
-        let mut count = 0;
-        for b in right.iter() {
-            if a == b {
-                count+=1;    
-            }
-        }
-        int_score.push(count * a);
+fn similarity_score(left: &Vec<i64>, right: &Vec<i64>) -> i64 {
+    let mut score = HashMap::new();
+    for b in right {
+        *score.entry(b).or_insert(0) += 1;
     }
-    int_score.iter().sum()
+    left.iter()
+    .map(|a| a * score.get(a).unwrap_or(&0))
+    .sum()
 }
 
 fn main() {
 
-    // PART ONE
     // reading file
-    let contents = fs::read_to_string("input.txt").expect("couldn't read");
+    let contents = fs::read_to_string("example.txt").expect("couldn't read");
     
     // // parse file into two vectors and sort
-    let (left, right) = split_whitespace(&contents);
+    let (left, right) = split_whitespace_sort(&contents);
 
-
+    // PART ONE
     // get the distances betrween each index in the list and sum total distance
-    let total = total_distance(left, right);
-    println!("{:?}", total);
+    let total = total_distance(&left, &right);
+    println!("total distance: {:?}", total);
 
     //PART TWO
-    let (left, right) = split_whitespace(&contents);
-    let score = similarity_score(left, right);
-    println!("{:?}", score);
+    let score = similarity_score(&left, &right);
+    println!("similarity score: {:?}", score);
     
 
 }
-
