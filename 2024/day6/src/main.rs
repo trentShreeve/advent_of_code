@@ -39,7 +39,9 @@ impl Map {
         }
         None
     }
+   
     fn move_guard(&self, direction: &Direction) {
+        
         let (dx, dy) = match direction {
             Direction::Up => (0, -1),
             Direction::Down => (0, 1),
@@ -48,8 +50,21 @@ impl Map {
         };
         
         let (mut x, mut y) = self.find_guard().unwrap();
-        
+        let mut next_move = Direction::Up;
+        // if current char == '^' {
+            // if next x,y = '#' {
+        //          turn
+        // } else {
+        //     keep going
+        // }
         loop {
+            if next_move.char() == '#' {
+                if self.map[x][y] == '^' {
+                    next_move = Direction::Right
+                }
+                 
+            }
+            
             // checking within bounds
             if x < 0 || y < 0 || y as usize >= self.map.len() || x as usize >= self.map[y as usize].len() {
                 break;
